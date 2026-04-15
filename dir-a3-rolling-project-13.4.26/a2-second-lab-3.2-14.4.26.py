@@ -1,7 +1,5 @@
 """roling project"""
-"""note: didnt start it yet"""
-
-
+import uuid
 from flask import Flask, jsonify, request
 
 app = Flask(__name__)
@@ -12,7 +10,6 @@ tasks = [
     {"id": 2, "title": "Build API",         "completed": False},
     {"id": 3, "title": "Test with Postman", "completed": True},
 ]
-task_id_counter = 4
 
 
 # ###### helper functions ##############
@@ -22,7 +19,7 @@ def _find_task(task_id):
     return next((t for t in tasks if t["id"] == task_id), None)
 
 
-@app.route("/tasks/print_all_tasks", methods=["GET"])
+@app.route("/tasks", methods=["GET"])
 def get_all_tasks():
     return jsonify(tasks)
 
@@ -33,11 +30,11 @@ def get_all_tasks():
 @app.route("/")
 def home():
     return jsonify({
-        "message": "API is runnning",
+        "message": "API is running",
     })
 
 
-@app.route("/tasks/<int:task_id>")
+@app.route("/tasks/<string:task_id>")
 def get_task(task_id):
     task = _find_task(task_id)
     if task is None:
@@ -47,26 +44,30 @@ def get_task(task_id):
 
 @app.route("/tasks", methods=["POST"])
 def post_task():
-    global task_id_counter
     body = request.get_json()
+    if not body:
+        return jsonify({"error": "JSON body required"}), 400
+    if "title" not in body:
+        return jsonify({"error": "title is required"}), 400
 
     new_task = {
-        "id": task_id_counter,
+        "id": str(uuid.uuid4()),
         "title": body["title"],
         "completed": False,
     }
     tasks.append(new_task)
-    task_id_counter += 1
     return jsonify(new_task), 201
 
 
-@app.route("/tasks/<int:task_id>", methods=["PUT"])
+@app.route("/tasks/<string:task_id>", methods=["PUT"])
 def update_task(task_id):
     task = _find_task(task_id)
     if task is None:
         return jsonify({"error": f"Task {task_id} not found"}), 404
 
     body = request.get_json()
+    if not body:
+        return jsonify({"error": "JSON body required"}), 400
 
     if "title" in body:
         task["title"] = body["title"]
@@ -76,14 +77,17 @@ def update_task(task_id):
     return jsonify(task)
 
 
-@app.route("/tasks/<int:task_id>", methods=["DELETE"])
+@app.route("/tasks/<string:task_id>", methods=["DELETE"])
 def delete_task(task_id):
     task = _find_task(task_id)
+    task_temp_copy = task
     if task is None:
         return jsonify({"error": f"Task {task_id} not found"}), 404
 
     tasks.remove(task)
-    return jsonify(task)
+    # return jsonify(f"[DELETED] Task {task_temp_copy}"), 204# Correct
+    return jsonify({"message": f"Task {task_temp_copy['id']} deleted"}), 200
+
 
 
 if __name__ == "__main__":

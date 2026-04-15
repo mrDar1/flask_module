@@ -1,4 +1,4 @@
-"""roling project"""
+"""roling project - here add error handling"""
 import uuid
 from flask import Flask, jsonify, request
 
@@ -6,13 +6,13 @@ app = Flask(__name__)
 
 # ########## const #################
 tasks = [
-    {"id": 1, "title": "Learn Flask",       "completed": False},
-    {"id": 2, "title": "Build API",         "completed": False},
-    {"id": 3, "title": "Test with Postman", "completed": True},
+    {"id": "1", "title": "Learn Flask",       "completed": False},
+    {"id": "2", "title": "Build API",         "completed": False},
+    {"id": "3", "title": "Test with Postman", "completed": True},
 ]
 
 
-# ###### helper functions ##############
+# * ###### helper functions ##############
 
 
 def _find_task(task_id):
@@ -24,7 +24,7 @@ def get_all_tasks():
     return jsonify(tasks)
 
 
-# ###### start logic ##############
+# * ###### start logic ##############
 
 
 @app.route("/")
@@ -86,7 +86,7 @@ def delete_task(task_id):
 
     tasks.remove(task)
     # return jsonify(f"[DELETED] Task {task_temp_copy}"), 204# Correct
-    return jsonify({"message": f"Task {task_temp_copy['id']} deleted"}), 200
+    return jsonify({"message": f"Task '{task_temp_copy['id']}' deleted"}), 200
 
 
 if __name__ == "__main__":

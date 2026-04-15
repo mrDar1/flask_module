@@ -41,3 +41,4 @@ for student in students:
         print("The average grade is ", average)
     finally:
         print("End of Calculation for student ", student["name"])
+    print("")

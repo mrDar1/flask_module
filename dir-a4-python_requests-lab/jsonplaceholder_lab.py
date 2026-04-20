@@ -48,7 +48,8 @@ print(f"Status Code: {response.status_code}")
 user_posts = response.json()
 print(f"Posts by userId=1: {len(user_posts)}")
 print(f"First post: {user_posts[0]}")
-
+# params is a requests.get() keyword argument that appends a query string to the URL automatically.
+# Instead of manually building ?userId=1, you pass a dict and requests handles the encoding — including proper URL-escaping for special characters or multiple values.
 # ─────────────────────────────────────────────
 # 4. GET COMMENTS FOR A POST
 # ─────────────────────────────────────────────
@@ -71,6 +72,11 @@ new_post = {
     "userId": 1
 }
 response = requests.post(f"{BASE_URL}/posts", json=new_post)
+# if not use "json" word above should do:
+# Manual equivalent — more verbose:
+#    import json
+#    requests.post(url, data=json.dumps(new_post), headers={"Content-Type": "application/json"})
+#    instead: "requests" module give us those 2 functions: 1. serialize dict to JSON, 2. sets header on the request.
 print(f"Status Code: {response.status_code}")  # 201 Created
 print(f"Created Post: {response.json()}")
 
@@ -175,6 +181,7 @@ custom_headers = {
     "Authorization": "Bearer fake-token-12345"
 }
 response = requests.get(f"{BASE_URL}/posts/1", headers=custom_headers)
+# "headers" is requests.get(...) preserve keyword. injects these into the outgoing HTTP request. The server reads them to decide how to respond — e.g., rejecting if the token is invalid, or parsing the body as JSON.
 print(f"Status Code: {response.status_code}")
 print(f"Post title: {response.json()['title']}")
 

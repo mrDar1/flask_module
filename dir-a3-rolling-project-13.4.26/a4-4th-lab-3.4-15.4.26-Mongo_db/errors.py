@@ -35,10 +35,9 @@ def method_not_allowed(e):
     }), 405
 
 
-# when the syntax ok, but the body is not
+# when request shape syntax ok, but the body is not
 @errors_bp.app_errorhandler(UnprocessableEntity)
 def empty_strings(e):
-    # Used when the request shape is valid but the value itself is unusable.
     return jsonify({
         "error": True,
         "message": str(e),

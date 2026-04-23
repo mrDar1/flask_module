@@ -1,41 +1,25 @@
 """roling project - error handling via errors.py"""
-import uuid
-from flask import Flask, jsonify, request, abort
+from flask import jsonify, request, abort, Blueprint
 from werkzeug.exceptions import NotFound, BadRequest
 from errors import errors_bp
 
 
-# ########## const #################
-tasks = [
-    {"id": "1", "title": "Learn Flask",       "completed": False},
-    {"id": "2", "title": "Build API",         "completed": False},
-    {"id": "3", "title": "Test with Postman", "completed": True},
-]
+tasks_bp = Blueprint("tasks", __name__)
 
 
-# * ###### helper functions ##############
-
-
-def _find_task(task_id):
-    return next((t for t in tasks if t["id"] == task_id), None)
-
-
-@app.route("/tasks", methods=["GET"])
+@tasks_bp.route("/tasks", methods=["GET"])
 def get_all_tasks():
     return jsonify(tasks)
 
 
-# * ###### start logic ##############
-
-
-@app.route("/")
+@tasks_bp.route("/")
 def home():
     return jsonify({
         "message": "API is running",
     })
 
 
-@app.route("/tasks/<string:task_id>")
+@tasks_bp.route("/tasks/<string:task_id>")
 def get_task(task_id):
     task = _find_task(task_id)
     if task is None:
@@ -45,7 +29,7 @@ def get_task(task_id):
     return jsonify(task)
 
 
-@app.route("/tasks", methods=["POST"])
+@tasks_bp.route("/tasks", methods=["POST"])
 def post_task():
     body = request.get_json()
     if not body:
@@ -62,7 +46,7 @@ def post_task():
     return jsonify(new_task), 201
 
 
-@app.route("/tasks/<string:task_id>", methods=["PUT"])
+@tasks_bp.route("/tasks/<string:task_id>", methods=["PUT"])
 def update_task(task_id):
     task = _find_task(task_id)
     if task is None:
@@ -80,7 +64,7 @@ def update_task(task_id):
     return jsonify(task)
 
 
-@app.route("/tasks/<string:task_id>", methods=["DELETE"])
+@tasks_bp.route("/tasks/<string:task_id>", methods=["DELETE"])
 def delete_task(task_id):
     task = _find_task(task_id)
     task_temp_copy = task

@@ -1,5 +1,4 @@
 """roling project - MongoDB CRUD via db.get_collection()"""
-import uuid
 from datetime import datetime, timezone
 from flask import jsonify, request, abort, Blueprint
 from werkzeug.exceptions import NotFound, BadRequest
@@ -42,7 +41,6 @@ def post_task():
 
     now = datetime.now(timezone.utc)
     new_task = {
-        "_id": str(uuid.uuid4()),
         "title": title,
         "completed": False,
         "created_at": now,

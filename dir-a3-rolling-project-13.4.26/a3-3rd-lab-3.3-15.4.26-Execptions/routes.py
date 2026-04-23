@@ -1,8 +1,11 @@
-"""roling project - here add error handling - didnt start yet"""
+"""roling project - error handling via errors.py"""
 import uuid
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
+from werkzeug.exceptions import NotFound, BadRequest
+from errors import errors_bp
 
 app = Flask(__name__)
+app.register_blueprint(errors_bp)
 
 # ########## const #################
 tasks = [
@@ -38,7 +41,9 @@ def home():
 def get_task(task_id):
     task = _find_task(task_id)
     if task is None:
-        return jsonify({"error": f"Task {task_id} not found"}), 404
+        abort(404, f"Task {task_id} not found")
+        # raise NotFound(f"Task {task_id} not found")
+        # raise and abort do the same - raise is python, abort is flask shortcut.
     return jsonify(task)
 
 
@@ -46,9 +51,9 @@ def get_task(task_id):
 def post_task():
     body = request.get_json()
     if not body:
-        return jsonify({"error": "JSON body required"}), 400
+        raise BadRequest("JSON body required")
     if "title" not in body:
-        return jsonify({"error": "title is required"}), 400
+        raise BadRequest("title is required")
 
     new_task = {
         "id": str(uuid.uuid4()),
@@ -63,11 +68,11 @@ def post_task():
 def update_task(task_id):
     task = _find_task(task_id)
     if task is None:
-        return jsonify({"error": f"Task {task_id} not found"}), 404
+        raise NotFound(f"Task {task_id} not found")
 
     body = request.get_json()
     if not body:
-        return jsonify({"error": "JSON body required"}), 400
+        raise BadRequest("JSON body required")
 
     if "title" in body:
         task["title"] = body["title"]
@@ -82,7 +87,7 @@ def delete_task(task_id):
     task = _find_task(task_id)
     task_temp_copy = task
     if task is None:
-        return jsonify({"error": f"Task {task_id} not found"}), 404
+        raise NotFound(f"Task {task_id} not found")
 
     tasks.remove(task)
     # return jsonify(f"[DELETED] Task {task_temp_copy}"), 204# Correct

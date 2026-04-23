@@ -1,5 +1,6 @@
 """roling project - MongoDB CRUD via db.get_collection()"""
 import uuid
+from datetime import datetime, timezone
 from flask import jsonify, request, abort, Blueprint
 from werkzeug.exceptions import NotFound, BadRequest
 from db import get_collection
@@ -39,10 +40,13 @@ def post_task():
     if not title:
         raise BadRequest("title cannot be empty")
 
+    now = datetime.now(timezone.utc)
     new_task = {
         "_id": str(uuid.uuid4()),
         "title": title,
         "completed": False,
+        "created_at": now,
+        "updated_at": now,
     }
     col = get_collection("tasks")
     col.insert_one(new_task)
@@ -72,6 +76,7 @@ def update_task(task_id):
         updates["completed"] = body["completed"]
 
     if updates:
+        updates["updated_at"] = datetime.now(timezone.utc)
         col.update_one({"_id": task_id}, {"$set": updates})
         task.update(updates)
 

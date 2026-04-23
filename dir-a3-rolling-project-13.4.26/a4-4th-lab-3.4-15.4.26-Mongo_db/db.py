@@ -18,8 +18,9 @@ def init_db(app):
         raise RuntimeError("MONGO_URI environment variable is not set.")
 
     _client = MongoClient(mongo_uri)
-    _db = _client["prod"]
-    # app.config["DB"] = _db  # flask stuff, makes it accessible anywhere at Flask app. check if can delete it and use "get_collection" only.
+    db_name = os.getenv("MONGO_DB_NAME", "prod")  # use db_name from .env and if not specify - defualt name is "prod"
+    _db = _client[db_name]
+    # app.config["DB"] = _db  # flask stuff, makes it accessible anywhere at Flask app. check if can delete it, without break code and use "get_collection" only.
 
 
 def get_collection(name):

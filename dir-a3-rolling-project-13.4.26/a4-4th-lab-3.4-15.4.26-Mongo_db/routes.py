@@ -4,8 +4,6 @@ from flask import Flask, jsonify, request, abort
 from werkzeug.exceptions import NotFound, BadRequest
 from errors import errors_bp
 
-app = Flask(__name__)
-app.register_blueprint(errors_bp)
 
 # ########## const #################
 tasks = [
@@ -92,7 +90,3 @@ def delete_task(task_id):
     tasks.remove(task)
     # return jsonify(f"[DELETED] Task {task_temp_copy}"), 204# Correct
     return jsonify({"message": f"Task '{task_temp_copy['id']}' deleted"}), 200
-
-
-if __name__ == "__main__":
-    app.run(debug=True)

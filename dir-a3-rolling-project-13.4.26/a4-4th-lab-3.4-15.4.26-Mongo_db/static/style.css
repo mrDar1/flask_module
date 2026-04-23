@@ -1,3 +1,32 @@
+/* added logo (small size): */
+.site-logo {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  height: 36px;
+  width: auto;
+  z-index: 100;
+}
+
+/* added adjust size (mid size): */
+@media (min-width: 768px) {
+  .site-logo {
+    top: 16px;
+    left: 16px;
+    height: 50px;
+  }
+}
+
+/* added adjust size (big size): */
+@media (min-width: 1200px) {
+  .site-logo {
+    top: 20px;
+    left: 20px;
+    height: 64px;
+  }
+}
+
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;

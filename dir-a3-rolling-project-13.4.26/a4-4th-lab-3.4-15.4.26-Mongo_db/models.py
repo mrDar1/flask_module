@@ -1,3 +1,4 @@
+"""can delete it - as now use MongoDB - used at past when all store in memory only"""
 import uuid
 
 # ########## const #################

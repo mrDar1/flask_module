@@ -85,7 +85,7 @@
       try {
         const res  = await fetch(API);
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Failed to load tasks");
+        if (!res.ok) throw new Error(data.message || "Failed to load tasks");
         renderTasks(data.data);
       } catch (e) {
         showError(e.message);
@@ -99,7 +99,7 @@
         body: JSON.stringify({ title }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to create task");
+      if (!res.ok) throw new Error(data.message || "Failed to create task");
       return data.data;
     }
 
@@ -110,14 +110,14 @@
         body: JSON.stringify({ completed }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to update task");
+      if (!res.ok) throw new Error(data.message || "Failed to update task");
       loadTasks();
     }
 
     async function deleteTask(id) {
       const res  = await fetch(`${API}/${id}`, { method: "DELETE" });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to delete task");
+      if (!res.ok) throw new Error(data.message || "Failed to delete task");
       loadTasks();
     }
 
@@ -129,7 +129,7 @@
           body: JSON.stringify({ title: newTitleValue }),
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error || "Failed to update task");
+        if (!res.ok) throw new Error(data.message || "Failed to update task");
         loadTasks();
       } catch (e) {
         showError(e.message);

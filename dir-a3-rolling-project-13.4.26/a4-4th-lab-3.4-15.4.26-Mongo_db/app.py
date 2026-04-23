@@ -15,6 +15,9 @@ app.register_blueprint(errors_bp)
 def index():
     col = get_collection("tasks")
     initial_tasks = [_serialize(t) for t in col.find({})]
+    # fetches all documents from a MongoDB collection and serializes them.
+    # converts it to a string so the document can be returned as JSON from a Flask route
+
     return render_template("index.html", initial_tasks=initial_tasks)
 
 

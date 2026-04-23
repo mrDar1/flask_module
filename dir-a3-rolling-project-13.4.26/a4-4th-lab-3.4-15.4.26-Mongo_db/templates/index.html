@@ -49,7 +49,7 @@
       tasks.forEach(task => {
         const li = document.createElement("li");
         li.className = "task-item" + (task.completed ? " completed" : "");
-        li.dataset.id = task._id;
+        li.dataset.id = task.id;
 
         li.innerHTML = `
           <label class="checkbox-label">
@@ -63,13 +63,13 @@
         `;
 
         // Toggle completed
-        li.querySelector(".toggle-cb").addEventListener("change", () => toggleTask(task._id, !task.completed));
+        li.querySelector(".toggle-cb").addEventListener("change", () => toggleTask(task.id, !task.completed));
 
         // Delete
-        li.querySelector(".btn-delete").addEventListener("click", () => deleteTask(task._id));
+        li.querySelector(".btn-delete").addEventListener("click", () => deleteTask(task.id));
 
         // Edit
-        li.querySelector(".btn-edit").onclick = () => startEdit(li, task, task._id);
+        li.querySelector(".btn-edit").onclick = () => startEdit(li, task, task.id);
 
         taskList.appendChild(li);
       });
@@ -86,7 +86,7 @@
         const res  = await fetch(API);
         const data = await res.json();
         if (!res.ok) throw new Error(data.message || "Failed to load tasks");
-        renderTasks(data.data);
+        renderTasks(data); // GET /tasks returns a plain array, not { data: [...] }
       } catch (e) {
         showError(e.message);
       }

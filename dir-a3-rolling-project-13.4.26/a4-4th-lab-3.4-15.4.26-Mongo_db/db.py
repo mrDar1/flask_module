@@ -7,10 +7,12 @@ from pymongo.database import Database # use for better IDE hint
 load_dotenv()
 
 
+# Module-level singletons; underscore prefix signals they are private to this module
 _client = None
 _db = None
 
 
+# init_db called once at startup; get_collection called per-request (cheap — no new connection)
 def init_db(app):
     global _client, _db
     mongo_uri = os.getenv("MONGO_URI")
